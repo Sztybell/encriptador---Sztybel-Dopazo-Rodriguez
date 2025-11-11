@@ -1,0 +1,53 @@
+# Algoritmo RSA en Python
+# Hecho simple para entender cómo funciona (sin librerías ni cosas raras)
+
+# Paso 1: elegir dos números primos
+p = int(input("Elegí un número primo p: "))
+q = int(input("Elegí otro número primo q: "))
+
+# Calculamos n y phi(n)
+n = p * q
+phi = (p - 1) * (q - 1)
+
+print("\nn =", n)
+print("phi(n) =", phi)
+
+# Paso 2: elegir e (debe ser coprimo con phi)
+e = int(input("Elegí un número e que sea coprimo con phi(n): "))
+
+# Paso 3: calcular d (la inversa modular de e mod phi)
+# Lo hacemos con un método simple (buscando a mano)
+d = 0
+for i in range(1, phi):
+    if (e * i) % phi == 1:
+        d = i
+        break
+
+print("\nClave pública: (e =", e, ", n =", n, ")")
+print("Clave privada: (d =", d, ", n =", n, ")")
+
+# Paso 4: cifrar un mensaje (convertimos letra por letra)
+mensaje = input("\nEscribí un mensaje (solo letras sin espacios): ").lower()
+
+# Convertimos las letras a números (a=1, b=2, etc)
+numeros = [ord(c) - 96 for c in mensaje]
+
+# Ciframos cada número con la fórmula: c = m^e mod n
+cifrado = [(m ** e) % n for m in numeros]
+
+print("\nMensaje cifrado (en números):")
+print(cifrado)
+
+# Paso 5: descifrar (m = c^d mod n)
+descifrado_numeros = [(c ** d) % n for c in cifrado]
+
+# Volvemos a convertir los números a letras
+descifrado = "".join([chr(m + 96) for m in descifrado_numeros])
+
+print("\nMensaje descifrado:")
+print(descifrado)
+
+# Nota:
+# Esto es una versión simplificada para entender el proceso.
+# En la vida real, RSA usa números enormes (de cientos o miles de bits)
+# y librerías especiales para manejar todo eso.
