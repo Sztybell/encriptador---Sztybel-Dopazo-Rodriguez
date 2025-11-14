@@ -1,0 +1,36 @@
+# Algoritmo de Diffie-Hellman en Python
+# Hecho simple para entender cómo se genera una clave compartida
+
+# Pedimos un número primo (p) y una base (g)
+p = int(input("Elegí un número primo (p): "))
+g = int(input("Elegí una base (g): "))
+
+print("\nAhora cada persona elige su número secreto (no lo comparten):")
+
+# Claves privadas (cada uno elige la suya)
+a = int(input("Persona A, elegí tu número secreto (a): "))
+b = int(input("Persona B, elegí tu número secreto (b): "))
+
+# Cada uno calcula su valor público y lo manda al otro
+A = (g ** a) % p
+B = (g ** b) % p
+
+print("\nValor público de A:", A)
+print("Valor público de B:", B)
+
+# Ahora cada uno calcula la clave compartida usando el valor del otro
+clave_A = (B ** a) % p
+clave_B = (A ** b) % p
+
+print("\nClave compartida calculada por A:", clave_A)
+print("Clave compartida calculada por B:", clave_B)
+
+# Si todo salió bien, las dos claves son iguales
+if clave_A == clave_B:
+    print("\n✅ Clave secreta compartida establecida con éxito!")
+else:
+    print("\n❌ Algo salió mal, las claves no coinciden (revisá los números).")
+
+# Nota:
+# Esto muestra cómo dos personas pueden acordar una clave secreta sin enviarla.
+# En la práctica se usa con números enormes, pero acá lo simplificamos para entenderlo.

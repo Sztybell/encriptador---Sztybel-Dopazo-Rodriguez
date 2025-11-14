@@ -1,0 +1,104 @@
+# Cifrado Playfair en Python
+# Hecho simple para entender cómo funciona (sin librerías raras ni nada)
+
+# Función para armar la matriz (5x5) con la clave
+def armar_matriz(clave):
+    clave = clave.lower().replace("j", "i")  # Se suele juntar i y j
+    letras = ""
+    for c in clave:
+        if c not in letras and c.isalpha():
+            letras += c
+    # Agregamos el resto del abecedario
+    for c in "abcdefghijklmnopqrstuvwxyz":
+        if c not in letras and c != "j":
+            letras += c
+    # Armamos la matriz (lista de listas)
+    matriz = [list(letras[i:i+5]) for i in range(0, 25, 5)]
+    return matriz
+
+# Función para mostrar la matriz (solo para entender mejor)
+def mostrar_matriz(m):
+    for fila in m:
+        print(" ".join(fila))
+
+# Función para buscar posición de una letra en la matriz
+def buscar(m, letra):
+    for i in range(5):
+        for j in range(5):
+            if m[i][j] == letra:
+                return i, j
+    return None
+
+# Preparamos el texto (sacamos espacios y hacemos pares)
+def preparar_texto(texto):
+    texto = texto.lower().replace(" ", "").replace("j", "i")
+    pares = []
+    i = 0
+    while i < len(texto):
+        a = texto[i]
+        b = ""
+        if i + 1 < len(texto):
+            b = texto[i + 1]
+        else:
+            b = "x"
+        if a == b:
+            pares.append(a + "x")
+            i += 1
+        else:
+            pares.append(a + b)
+            i += 2
+    return pares
+
+# Función principal del cifrado o descifrado
+def playfair(texto, clave, modo):
+    matriz = armar_matriz(clave)
+    texto_pares = preparar_texto(texto)
+    resultado = ""
+
+    for par in texto_pares:
+        a, b = par[0], par[1]
+        fila_a, col_a = buscar(matriz, a)
+        fila_b, col_b = buscar(matriz, b)
+
+        if fila_a == fila_b:
+            # Misma fila
+            if modo == "c":
+                resultado += matriz[fila_a][(col_a + 1) % 5]
+                resultado += matriz[fila_b][(col_b + 1) % 5]
+            else:
+                resultado += matriz[fila_a][(col_a - 1) % 5]
+                resultado += matriz[fila_b][(col_b - 1) % 5]
+        elif col_a == col_b:
+            # Misma columna
+            if modo == "c":
+                resultado += matriz[(fila_a + 1) % 5][col_a]
+                resultado += matriz[(fila_b + 1) % 5][col_b]
+            else:
+                resultado += matriz[(fila_a - 1) % 5][col_a]
+                resultado += matriz[(fila_b - 1) % 5][col_b]
+        else:
+            # Rectángulo
+            resultado += matriz[fila_a][col_b]
+            resultado += matriz[fila_b][col_a]
+
+    return resultado
+
+# Pedimos los datos al usuario
+texto = input("Escribí el texto que querés cifrar o descifrar: ")
+clave = input("Poné la clave (por ejemplo 'mate'): ")
+modo = input("Escribí 'c' para cifrar o 'd' para descifrar: ")
+
+# Mostramos la matriz (solo para verlo)
+print("\nMatriz Playfair generada:")
+mostrar_matriz(armar_matriz(clave))
+
+# Ejecutamos el proceso
+resultado = playfair(texto, clave, modo)
+
+print("\nResultado:")
+print(resultado)
+
+# Nota:
+# Ejemplo: texto = "hola mundo", clave = "mate", modo = "c"
+# → Te da algo cifrado tipo "ibqdqx..." (varía según la clave)
+# Si lo ponés en modo 'd' con el mismo texto cifrado y la misma clave, vuelve al original.

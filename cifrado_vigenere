@@ -1,0 +1,47 @@
+# Cifrado Vigenère en Python
+# Hecho simple para entender cómo funciona
+
+# Pedimos el texto al usuario
+texto = input("Escribí el texto que querés encriptar o desencriptar: ")
+
+# Pedimos la clave (una palabra cualquiera)
+clave = input("Poné la clave (por ejemplo 'mate'): ")
+
+# Preguntamos si quiere cifrar o descifrar
+modo = input("Escribí 'c' para cifrar o 'd' para descifrar: ")
+
+# Variable donde guardamos el resultado
+resultado = ""
+
+# Recorremos letra por letra
+for i in range(len(texto)):
+    letra = texto[i]
+    # Usamos la clave de forma repetida
+    letra_clave = clave[i % len(clave)]
+
+    # Solo trabajamos si es una letra del abecedario
+    if letra.isalpha():
+        # Pasamos todo a mayúsculas para hacerlo más fácil
+        base = ord('A') if letra.isupper() else ord('a')
+        # Desplazamiento según la letra de la clave
+        desplazamiento = ord(letra_clave.lower()) - ord('a')
+
+        # Si ciframos sumamos, si desciframos restamos
+        if modo == 'c':
+            nueva_letra = chr((ord(letra) - base + desplazamiento) % 26 + base)
+        else:
+            nueva_letra = chr((ord(letra) - base - desplazamiento) % 26 + base)
+
+        resultado += nueva_letra
+    else:
+        # Si no es letra (espacio, número, etc), lo dejamos igual
+        resultado += letra
+
+# Mostramos el resultado
+print("\nResultado:")
+print(resultado)
+
+# Nota:
+# Ejemplo: texto = "hola", clave = "sol"
+# En modo 'c' te da algo cifrado.
+# Si usás el texto cifrado y la misma clave en modo 'd', te devuelve el original.
